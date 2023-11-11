@@ -5,7 +5,7 @@ from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.graphics import Color, Rectangle
-
+from kivy.uix.videoplayer import VideoPlayer
 
 class VideoSearchScreen(Screen):
     def __init__(self, **kwargs):
@@ -13,7 +13,7 @@ class VideoSearchScreen(Screen):
         self.layout = BoxLayout(orientation='vertical', padding=[20, 50, 20, 50])
 
         with self.layout.canvas.before:
-            Color(0.69, 0.94, 0.92, 1)
+            Color(0,0,0, 1)
             self.rect = Rectangle(size=self.size, pos=self.pos)
 
         self.layout.bind(size=self._update_rect, pos=self._update_rect)
@@ -23,8 +23,15 @@ class VideoSearchScreen(Screen):
             multiline=False,
             size_hint=(None, None),
             size=(935, 50),
-            pos_hint={'x': 0.0, 'y': 2.0},
+            pos_hint={'center_x': 0.5},
             background_color=(1, 1, 1, 1)
+        )
+
+        self.search_label = Label(
+            text='SEARCH',
+            font_size=40,
+            halign='center',
+            valign='middle'
         )
 
         self.search_button = Button(
@@ -32,10 +39,11 @@ class VideoSearchScreen(Screen):
             on_press=self.perform_search,
             size_hint=(None, None),
             size=(200, 50),
-            pos_hint={'x': 0.0, 'y': 2.0},
+            pos_hint={'center_x': 0.5},
             background_color=(0.12, 0.43, 0.94, 1)
         )
 
+        self.layout.add_widget(self.search_label)
         self.layout.add_widget(self.search_query_panel)
         self.layout.add_widget(self.search_button)
         self.add_widget(self.layout)
@@ -55,8 +63,23 @@ class SearchResultScreen(Screen):
     def __init__(self, **kwargs):
         super(SearchResultScreen, self).__init__(**kwargs)
         self.layout = BoxLayout(orientation='vertical', padding=[20, 50, 20, 50])
-        self.layout.add_widget(Label(text="Search Result Screen"))
+        self.back_button = Button(
+            text='Back',
+            on_press=self.go_back,
+            size_hint=(None, None),
+            size=(200, 50),
+            pos_hint={'center_x': 0.5},
+            background_color=(0.12, 0.43, 0.94, 1)
+        )
+        self.layout.add_widget(self.back_button)
+        video = VideoPlayer(source='traffic.mp4', state='pause', options={'allow_stretch': True})
+        video.size_hint_y = 0.8
+        self.layout.add_widget(video)
         self.add_widget(self.layout)
+
+    def go_back(self, instance):
+        app = App.get_running_app()
+        app.root.current = 'search'
 
 
 class VideoSearchApp(App):
@@ -65,7 +88,6 @@ class VideoSearchApp(App):
         sm.add_widget(VideoSearchScreen(name='search'))
         sm.add_widget(SearchResultScreen(name='result'))
         return sm
-
 
 if __name__ == '__main__':
     VideoSearchApp().run()
