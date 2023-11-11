@@ -11,7 +11,7 @@ class VideoSearchScreen(BoxLayout):
         self.padding = [20, 50, 20, 50]
 
         with self.canvas.before:
-            Color(1, 1, 1, 1)
+            Color(0.69, 0.94, 0.92, 1)
             self.rect = Rectangle(size=self.size, pos=self.pos)
 
         self.bind(size=self._update_rect, pos=self._update_rect)
@@ -31,7 +31,7 @@ class VideoSearchScreen(BoxLayout):
             size_hint=(None, None),
             size=(200, 50),
             pos_hint={'x': 0.0, 'y': 2.0}, 
-            background_color=(0.4, 0.4, 1, 1)
+            background_color=(0.12, 0.43, 0.94, 1)
         )
 
         self.add_widget(self.search_query_panel)
