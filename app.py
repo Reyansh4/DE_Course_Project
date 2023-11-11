@@ -2,6 +2,7 @@ from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
+from kivy.uix.label import Label
 from kivy.graphics import Color, Rectangle
 
 class VideoSearchScreen(BoxLayout):
@@ -29,11 +30,11 @@ class VideoSearchScreen(BoxLayout):
             text='Search',
             on_press=self.perform_search,
             size_hint=(None, None),
-            size=(200, 50),
-            pos_hint={'x': 0.0, 'y': 2.0}, 
+            size=(200, 45),
+            pos_hint={'x': 0.0, 'y': 2.0},
             background_color=(0.4, 0.4, 1, 1)
         )
-
+        
         self.add_widget(self.search_query_panel)
         self.add_widget(self.search_button)
 
