@@ -3,7 +3,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.textinput import TextInput
 from kivy.uix.label import Label
 from kivy.uix.button import Button
-from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.uix.screenmanager import ScreenManager, Screen, SlideTransition
 from kivy.graphics import Color, Rectangle
 from kivy.uix.videoplayer import VideoPlayer
 
@@ -56,7 +56,9 @@ class VideoSearchScreen(Screen):
         search_query = self.search_query_panel.text
         print(f"Search : {search_query}")
         app = App.get_running_app()
-        app.root.current = 'result'
+        sm = app.root
+        sm.transition.direction = 'left'
+        sm.current = 'result'
 
 
 class SearchResultScreen(Screen):
@@ -79,7 +81,9 @@ class SearchResultScreen(Screen):
 
     def go_back(self, instance):
         app = App.get_running_app()
-        app.root.current = 'search'
+        sm = app.root
+        sm.transition.direction = 'right'
+        sm.current = 'search'
 
 
 class VideoSearchApp(App):
