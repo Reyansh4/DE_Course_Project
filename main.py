@@ -66,13 +66,15 @@ class SearchResultScreen(Screen):
         super(SearchResultScreen, self).__init__(**kwargs)
         self.layout = BoxLayout(orientation='horizontal', padding=[20, 50, 20, 50])
 
-        self.video_description_layout = BoxLayout(orientation='vertical', size_hint=(0.5, 1))
+        # ... (existing code)
+
+        self.video_description_layout = BoxLayout(orientation='vertical', size_hint=(0.7, 1))
         self.back_button = Button(
             text='Back',
             on_press=self.go_back,
             size_hint=(None, None),
             size=(200, 50),
-            pos_hint = {'center_x': 0.2},
+            pos_hint={'center_x': 0.2},
             background_color=(0.12, 0.43, 0.94, 1)
         )
         self.video_description = Label(text='Video Description', font_size=20)
@@ -80,17 +82,34 @@ class SearchResultScreen(Screen):
         self.video_description_layout.add_widget(self.back_button)
         self.video_description_layout.add_widget(self.video_description)
 
-        images = ['img.jpeg', 'img.jpeg', 'img.jpeg']
+        data_from_mongo = [
+            {'title': 'Video 1', 'details': 'Details 1', 'thumbnail': 'img.jpeg'},
+            {'title': 'Video 2', 'details': 'Details 2', 'thumbnail': 'img.jpeg'},
+            {'title': 'Video 3', 'details': 'Details 3', 'thumbnail': 'img.jpeg'},
+        ]
 
-        self.thumbnail_layout = GridLayout(cols=1, size_hint=(1, 1))
-        for source in images:
-            thumbnail = AsyncImage(source=source)
+        self.thumbnail_layout = GridLayout(cols=1, size_hint=(0.3, 1))
+        for video_data in data_from_mongo:
+            thumbnail = AsyncImage(source=video_data['thumbnail'])
             thumbnail.size_hint = (1, None)
             thumbnail.height = 300
             self.thumbnail_layout.add_widget(thumbnail)
 
+        self.title_details_layout = BoxLayout(orientation='vertical', size_hint=(0.3, 1))
+        for video_data in data_from_mongo:
+            info_layout = BoxLayout(orientation='vertical', size_hint_x=0.8)
+
+            title_label = Label(text=video_data['title'])
+            info_layout.add_widget(title_label)
+
+            details_label = Label(text=video_data['details'])
+            info_layout.add_widget(details_label)
+
+            self.title_details_layout.add_widget(info_layout)
+
         self.layout.add_widget(self.video_description_layout)
         self.layout.add_widget(self.thumbnail_layout)
+        self.layout.add_widget(self.title_details_layout)
 
         self.add_widget(self.layout)
 
@@ -99,6 +118,7 @@ class SearchResultScreen(Screen):
         sm = app.root
         sm.transition.direction = 'right'
         sm.current = 'search'
+
 
 class VideoSearchApp(App):
     def build(self):
