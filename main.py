@@ -3,9 +3,8 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.textinput import TextInput
 from kivy.uix.label import Label
 from kivy.uix.button import Button
-from kivy.uix.screenmanager import ScreenManager, Screen, SlideTransition
+from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.graphics import Color, Rectangle
-from kivy.uix.scrollview import ScrollView
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.image import AsyncImage
 
@@ -67,44 +66,35 @@ class SearchResultScreen(Screen):
         super(SearchResultScreen, self).__init__(**kwargs)
         self.layout = BoxLayout(orientation='horizontal', padding=[20, 50, 20, 50])
 
-        self.video_layout = BoxLayout(orientation='vertical', size_hint=(1, 1))
-
+        # Left side: Video Description
+        self.video_description_layout = BoxLayout(orientation='vertical', size_hint=(0.5, 1))
         self.back_button = Button(
             text='Back',
             on_press=self.go_back,
             size_hint=(None, None),
             size=(200, 50),
-            pos_hint={'center_x': 0.1},
+            pos_hint={'center_x': 0.125},
             background_color=(0.12, 0.43, 0.94, 1)
         )
-
         self.video_description = Label(text='Video Description', font_size=20)
 
-        self.video_layout.add_widget(self.back_button)
-        self.video_layout.add_widget(self.video_description)
+        self.video_description_layout.add_widget(self.back_button)
+        self.video_description_layout.add_widget(self.video_description)
 
+        # Right side: Thumbnails
         images = ['img.jpeg', 'img.jpeg', 'img.jpeg']
 
-        bottom_layout = GridLayout(cols=3, size_hint_y=None, height=100)
+        self.thumbnail_layout = GridLayout(cols=1, size_hint=(1, 1))
         for source in images:
             thumbnail = AsyncImage(source=source)
             thumbnail.size_hint = (1, None)
-            thumbnail.height = 100
-            box = BoxLayout(orientation='vertical')
-            box.add_widget(thumbnail)
-            box.bind(size=self._update_rect, pos=self._update_rect)
-            bottom_layout.add_widget(box)
+            thumbnail.height = 300
+            self.thumbnail_layout.add_widget(thumbnail)
 
-        self.layout.add_widget(self.video_layout)
-        self.layout.add_widget(bottom_layout)
+        self.layout.add_widget(self.video_description_layout)
+        self.layout.add_widget(self.thumbnail_layout)
 
         self.add_widget(self.layout)
-
-    def _update_rect(self, instance, value):
-        instance.canvas.before.clear()
-        with instance.canvas.before:
-            Color(0, 0, 0, 1)
-            rect = Rectangle(size=instance.size, pos=instance.pos)
 
     def go_back(self, instance):
         app = App.get_running_app()
