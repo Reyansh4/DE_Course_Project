@@ -7,6 +7,8 @@ from kivy.uix.screenmanager import ScreenManager, Screen, SlideTransition
 from kivy.graphics import Color, Rectangle
 from kivy.uix.videoplayer import VideoPlayer
 from kivy.uix.scrollview import ScrollView
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.image import AsyncImage
 
 class VideoSearchScreen(Screen):
     def __init__(self, **kwargs):
@@ -61,41 +63,61 @@ class VideoSearchScreen(Screen):
         sm.transition.direction = 'left'
         sm.current = 'result'
 
-
 class SearchResultScreen(Screen):
     def __init__(self, **kwargs):
         super(SearchResultScreen, self).__init__(**kwargs)
         self.layout = BoxLayout(orientation='horizontal', padding=[20, 50, 20, 50])
 
-        self.video_layout = BoxLayout(orientation='vertical', size_hint=(0.7, 1))
+        self.video_layout = BoxLayout(orientation='vertical', size_hint=(1, 1))
+
         self.back_button = Button(
             text='Back',
             on_press=self.go_back,
             size_hint=(None, None),
             size=(200, 50),
-            pos_hint={'center_x': 0.5},
+            pos_hint={'center_x': 0.1},
             background_color=(0.12, 0.43, 0.94, 1)
         )
+
         video = VideoPlayer(source='traffic.mp4', state='pause', options={'allow_stretch': True})
-        video.size_hint_y = 0.8
+        video.size_hint_y = 1.0
+
         self.video_layout.add_widget(self.back_button)
         self.video_layout.add_widget(video)
 
-        self.description_layout = BoxLayout(orientation='vertical', size_hint=(0.3, 1))
+        self.description_layout = BoxLayout(orientation='vertical', size_hint=(0.2, 1))
         self.description_label = Label(text='Video Description', font_size=20)
         self.description_layout.add_widget(self.description_label)
 
+        images = ['img.jpeg','img.jpeg','img.jpeg']
+
+        bottom_layout = GridLayout(cols=3, size_hint_y=None, height=100)
+        for source in images:
+            thumbnail = AsyncImage(source=source)
+            thumbnail.size_hint = (1, None)
+            thumbnail.height = 100
+            box = BoxLayout(orientation='horizontal')
+            box.add_widget(thumbnail)
+            box.bind(size=self._update_rect, pos=self._update_rect)
+            bottom_layout.add_widget(box)
+
         self.layout.add_widget(self.video_layout)
         self.layout.add_widget(self.description_layout)
-        
+        self.layout.add_widget(bottom_layout)
+
         self.add_widget(self.layout)
+
+    def _update_rect(self, instance, value):
+        instance.canvas.before.clear()
+        with instance.canvas.before:
+            Color(0, 0, 0, 1)
+            rect = Rectangle(size=instance.size, pos=instance.pos)
 
     def go_back(self, instance):
         app = App.get_running_app()
         sm = app.root
         sm.transition.direction = 'right'
         sm.current = 'search'
-
 
 class VideoSearchApp(App):
     def build(self):
