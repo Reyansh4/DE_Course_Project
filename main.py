@@ -6,6 +6,7 @@ from kivy.uix.button import Button
 from kivy.uix.screenmanager import ScreenManager, Screen, SlideTransition
 from kivy.graphics import Color, Rectangle
 from kivy.uix.videoplayer import VideoPlayer
+from kivy.uix.scrollview import ScrollView
 
 class VideoSearchScreen(Screen):
     def __init__(self, **kwargs):
@@ -64,7 +65,9 @@ class VideoSearchScreen(Screen):
 class SearchResultScreen(Screen):
     def __init__(self, **kwargs):
         super(SearchResultScreen, self).__init__(**kwargs)
-        self.layout = BoxLayout(orientation='vertical', padding=[20, 50, 20, 50])
+        self.layout = BoxLayout(orientation='horizontal', padding=[20, 50, 20, 50])
+
+        self.video_layout = BoxLayout(orientation='vertical', size_hint=(0.7, 1))
         self.back_button = Button(
             text='Back',
             on_press=self.go_back,
@@ -73,10 +76,18 @@ class SearchResultScreen(Screen):
             pos_hint={'center_x': 0.5},
             background_color=(0.12, 0.43, 0.94, 1)
         )
-        self.layout.add_widget(self.back_button)
         video = VideoPlayer(source='traffic.mp4', state='pause', options={'allow_stretch': True})
         video.size_hint_y = 0.8
-        self.layout.add_widget(video)
+        self.video_layout.add_widget(self.back_button)
+        self.video_layout.add_widget(video)
+
+        self.description_layout = BoxLayout(orientation='vertical', size_hint=(0.3, 1))
+        self.description_label = Label(text='Video Description', font_size=20)
+        self.description_layout.add_widget(self.description_label)
+
+        self.layout.add_widget(self.video_layout)
+        self.layout.add_widget(self.description_layout)
+        
         self.add_widget(self.layout)
 
     def go_back(self, instance):
