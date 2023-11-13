@@ -66,14 +66,13 @@ class SearchResultScreen(Screen):
         super(SearchResultScreen, self).__init__(**kwargs)
         self.layout = BoxLayout(orientation='horizontal', padding=[20, 50, 20, 50])
 
-        # Left side: Video Description
         self.video_description_layout = BoxLayout(orientation='vertical', size_hint=(0.5, 1))
         self.back_button = Button(
             text='Back',
             on_press=self.go_back,
             size_hint=(None, None),
             size=(200, 50),
-            pos_hint={'center_x': 0.125},
+            pos_hint = {'center_x': 0.2},
             background_color=(0.12, 0.43, 0.94, 1)
         )
         self.video_description = Label(text='Video Description', font_size=20)
@@ -81,7 +80,6 @@ class SearchResultScreen(Screen):
         self.video_description_layout.add_widget(self.back_button)
         self.video_description_layout.add_widget(self.video_description)
 
-        # Right side: Thumbnails
         images = ['img.jpeg', 'img.jpeg', 'img.jpeg']
 
         self.thumbnail_layout = GridLayout(cols=1, size_hint=(1, 1))
