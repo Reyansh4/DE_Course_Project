@@ -83,9 +83,9 @@ class SearchResultScreen(Screen):
         self.video_description_layout.add_widget(self.video_description)
 
         data_from_mongo = [
-            {'title': 'Video 1', 'details': 'Details 1', 'thumbnail': 'img.jpeg'},
-            {'title': 'Video 2', 'details': 'Details 2', 'thumbnail': 'img.jpeg'},
-            {'title': 'Video 3', 'details': 'Details 3', 'thumbnail': 'img.jpeg'},
+            {'title': 'Video 1', 'details': 'Details 1', 'thumbnail': 'https://akm-img-a-in.tosshub.com/indiatoday/images/story/media_bank/202309/second-track-badass-from-thalapathy-vijays-leo-will-release-on-september-28-272346380-16x9.jpg?VersionId=XpzDqWNDkrtBevS0gfdJg3BF6FBvZw9C'},
+            {'title': 'Video 2', 'details': 'Details 2', 'thumbnail': 'https://akm-img-a-in.tosshub.com/indiatoday/images/story/media_bank/202309/second-track-badass-from-thalapathy-vijays-leo-will-release-on-september-28-272346380-16x9.jpg?VersionId=XpzDqWNDkrtBevS0gfdJg3BF6FBvZw9C'},
+            {'title': 'Video 3', 'details': 'Details 3', 'thumbnail': 'https://akm-img-a-in.tosshub.com/indiatoday/images/story/media_bank/202309/second-track-badass-from-thalapathy-vijays-leo-will-release-on-september-28-272346380-16x9.jpg?VersionId=XpzDqWNDkrtBevS0gfdJg3BF6FBvZw9C'}
         ]
 
         self.thumbnail_layout = GridLayout(cols=1, size_hint=(0.3, 1))
