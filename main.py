@@ -14,7 +14,7 @@ class VideoSearchScreen(Screen):
         self.layout = BoxLayout(orientation='vertical', padding=[20, 50, 20, 50])
 
         with self.layout.canvas.before:
-            Color(0,0,0, 1)
+            Color(0, 0, 0, 1)
             self.rect = Rectangle(size=self.size, pos=self.pos)
 
         self.layout.bind(size=self._update_rect, pos=self._update_rect)
@@ -66,8 +66,6 @@ class SearchResultScreen(Screen):
         super(SearchResultScreen, self).__init__(**kwargs)
         self.layout = BoxLayout(orientation='horizontal', padding=[20, 50, 20, 50])
 
-        # ... (existing code)
-
         self.video_description_layout = BoxLayout(orientation='vertical', size_hint=(0.7, 1))
         self.back_button = Button(
             text='Back',
@@ -83,16 +81,21 @@ class SearchResultScreen(Screen):
         self.video_description_layout.add_widget(self.video_description)
 
         data_from_mongo = [
-            {'title': 'Video 1', 'details': 'Details 1', 'data' : 'data1', 'thumbnail': 'https://akm-img-a-in.tosshub.com/indiatoday/images/story/media_bank/202309/second-track-badass-from-thalapathy-vijays-leo-will-release-on-september-28-272346380-16x9.jpg?VersionId=XpzDqWNDkrtBevS0gfdJg3BF6FBvZw9C'},
-            {'title': 'Video 2', 'details': 'Details 2', 'data' : 'data2', 'thumbnail': 'https://akm-img-a-in.tosshub.com/indiatoday/images/story/media_bank/202309/second-track-badass-from-thalapathy-vijays-leo-will-release-on-september-28-272346380-16x9.jpg?VersionId=XpzDqWNDkrtBevS0gfdJg3BF6FBvZw9C'},
-            {'title': 'Video 3', 'details': 'Details 3', 'data' : 'data3', 'thumbnail': 'https://akm-img-a-in.tosshub.com/indiatoday/images/story/media_bank/202309/second-track-badass-from-thalapathy-vijays-leo-will-release-on-september-28-272346380-16x9.jpg?VersionId=XpzDqWNDkrtBevS0gfdJg3BF6FBvZw9C'}
+            {'title': 'Video 2', 'details': 'Details 2', 'info': 'data2',
+             'thumbnail': 'https://akm-img-a-in.tosshub.com/indiatoday/images/story/media_bank/202309/second-track-badass-from-thalapathy-vijays-leo-will-release-on-september-28-272346380-16x9.jpg?VersionId=XpzDqWNDkrtBevS0gfdJg3BF6FBvZw9C'},
+            {'title': 'Video 1', 'details': 'Details 1', 'info': 'data1',
+             'thumbnail': 'https://akm-img-a-in.tosshub.com/indiatoday/images/story/media_bank/202309/second-track-badass-from-thalapathy-vijays-leo-will-release-on-september-28-272346380-16x9.jpg?VersionId=XpzDqWNDkrtBevS0gfdJg3BF6FBvZw9C'},
+            {'title': 'Video 3', 'details': 'Details 3', 'info': 'data3',
+             'thumbnail': 'https://akm-img-a-in.tosshub.com/indiatoday/images/story/media_bank/202309/second-track-badass-from-thalapathy-vijays-leo-will-release-on-september-28-272346380-16x9.jpg?VersionId=XpzDqWNDkrtBevS0gfdJg3BF6FBvZw9C'}
         ]
 
         self.thumbnail_layout = GridLayout(cols=1, size_hint=(0.3, 1))
-        for video_data in data_from_mongo:
+        for i, video_data in enumerate(data_from_mongo):
             thumbnail = AsyncImage(source=video_data['thumbnail'])
             thumbnail.size_hint = (1, None)
             thumbnail.height = 300
+            thumbnail.idx = i
+            thumbnail.bind(on_touch_down=self.show_info)
             self.thumbnail_layout.add_widget(thumbnail)
 
         self.title_details_layout = BoxLayout(orientation='vertical', size_hint=(0.3, 1))
@@ -119,6 +122,19 @@ class SearchResultScreen(Screen):
         sm.transition.direction = 'right'
         sm.current = 'search'
 
+    def show_info(self, instance, touch):
+        if touch.button == 'left' and instance.collide_point(*touch.pos):
+            thumbnail_idx = instance.idx
+            data_from_mongo = [
+                {'title': 'Video 2', 'details': 'Details 2', 'info': 'data2',
+                'thumbnail': 'https://akm-img-a-in.tosshub.com/indiatoday/images/story/media_bank/202309/second-track-badass-from-thalapathy-vijays-leo-will-release-on-september-28-272346380-16x9.jpg?VersionId=XpzDqWNDkrtBevS0gfdJg3BF6FBvZw9C'},
+                {'title': 'Video 1', 'details': 'Details 1', 'info': 'data1',
+                'thumbnail': 'https://akm-img-a-in.tosshub.com/indiatoday/images/story/media_bank/202309/second-track-badass-from-thalapathy-vijays-leo-will-release-on-september-28-272346380-16x9.jpg?VersionId=XpzDqWNDkrtBevS0gfdJg3BF6FBvZw9C'},
+                {'title': 'Video 3', 'details': 'Details 3', 'info': 'data3',
+                'thumbnail': 'https://akm-img-a-in.tosshub.com/indiatoday/images/story/media_bank/202309/second-track-badass-from-thalapathy-vijays-leo-will-release-on-september-28-272346380-16x9.jpg?VersionId=XpzDqWNDkrtBevS0gfdJg3BF6FBvZw9C'}
+            ]
+            
+            self.video_description.text = f"Info: {data_from_mongo[thumbnail_idx]['info']}"
 
 class VideoSearchApp(App):
     def build(self):
