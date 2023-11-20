@@ -59,11 +59,16 @@ class VideoSearchScreen(Screen):
 
     def perform_search(self, instance):
         search_query = self.search_query_panel.text
-        print(f"Search : {search_query}")
         app = App.get_running_app()
         sm = app.root
         sm.transition.direction = 'left'
         sm.current = 'result'
+        mongo_var = VideoMongoDatabase(database_name='Course_Project')
+        result = mongo_var.perform_search(search_query)
+        print(f"Search : {search_query}")
+        for document in result:
+            print(document)
+        
 
 class SearchResultScreen(Screen):
     def __init__(self, **kwargs):
