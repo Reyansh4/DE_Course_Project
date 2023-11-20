@@ -22,5 +22,5 @@ class VideoDatabase:
         print("Videos inserted successfully!")
 
 if __name__ == "__main__":
-    video_db = VideoDatabase(database_name='Course_Project')
-    video_db.insert_videos()
+    video_mongo_db = VideoDatabase(database_name='Course_Project')
+    video_mongo_db.insert_videos()
