@@ -66,5 +66,4 @@ class VideoDatabase:
 
 if __name__ == "__main__":
     video_db =  VideoDatabase(user='root', password='Rey@nsh4', database='Course_Project')
-
     video_db.insert_videos()
