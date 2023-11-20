@@ -7,10 +7,14 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.graphics import Color, Rectangle
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.image import AsyncImage
+from SQL_db_setup import VideoDatabase
+from Mongo_db_setup import VideoMongoDatabase
 
 class VideoSearchScreen(Screen):
-    def __init__(self, **kwargs):
+    def __init__(self, video_db,video_mongo_db,**kwargs):
         super(VideoSearchScreen, self).__init__(**kwargs)
+        self.video_db = video_db
+        self.video_mongo_db = video_mongo_db
         self.layout = BoxLayout(orientation='vertical', padding=[20, 50, 20, 50])
 
         with self.layout.canvas.before:
@@ -139,8 +143,12 @@ class SearchResultScreen(Screen):
 class VideoSearchApp(App):
     def build(self):
         sm = ScreenManager()
-        sm.add_widget(VideoSearchScreen(name='search'))
-        sm.add_widget(SearchResultScreen(name='result'))
+        video_db =  VideoDatabase(user='root', password='Rey@nsh4', database='Course_Project')
+        video_mongo_db = VideoMongoDatabase(database_name='Course_Project')
+        search_screen = VideoSearchScreen(video_db=video_db, video_mongo_db=video_mongo_db, name='search')
+        result_screen = SearchResultScreen(name='result')
+        sm.add_widget(search_screen)
+        sm.add_widget(result_screen)
         return sm
 
 if __name__ == '__main__':

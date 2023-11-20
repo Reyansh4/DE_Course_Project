@@ -2,7 +2,7 @@ import os
 import json
 from pymongo import MongoClient
 
-class VideoDatabase:
+class VideoMongoDatabase:
     def __init__(self, database_url='mongodb://localhost:27017/', database_name='your_database'):
         self.client = MongoClient(database_url)
         self.db = self.client[database_name]
@@ -22,5 +22,5 @@ class VideoDatabase:
         print("Videos inserted successfully!")
 
 if __name__ == "__main__":
-    video_mongo_db = VideoDatabase(database_name='Course_Project')
+    video_mongo_db = VideoMongoDatabase(database_name='Course_Project')
     video_mongo_db.insert_videos()
