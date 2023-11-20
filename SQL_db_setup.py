@@ -49,7 +49,7 @@ class VideoDatabase:
                         statistics = data['videoInfo']['statistics']
                         
                         cursor.execute('''
-                            INSERT INTO stats (video_id, commentCount, viewCount, favoriteCount, dislikeCount, likeCount)
+                            INSERT IGNORE INTO stats (video_id, commentCount, viewCount, favoriteCount, dislikeCount, likeCount)
                             VALUES (%s, %s, %s, %s, %s, %s)
                         ''', (video_id, statistics.get('commentCount', 0), statistics.get('viewCount', 0),
                               statistics.get('favoriteCount', 0), statistics.get('dislikeCount', 0),
