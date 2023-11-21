@@ -98,8 +98,6 @@ class VideoDatabase:
                 'dislikeCount': sql_result[0][4],
                 'likeCount': sql_result[0][5]
             }
-        
-        print("searching videoids successful")
         return vidstats_dict
 
 if __name__ == "__main__":

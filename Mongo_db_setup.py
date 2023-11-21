@@ -17,6 +17,9 @@ class VideoMongoDatabase:
                 file_path = os.path.join(folder_path, filename)
                 with open(file_path, 'r') as file:
                     data = json.load(file)
+                    if 'statistics' in data['videoInfo']:
+                        del data['videoInfo']['statistics']
+                        
                     self.videos_collection.insert_one(data)
 
         print("Videos inserted successfully!")
