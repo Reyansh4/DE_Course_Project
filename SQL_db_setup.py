@@ -62,7 +62,45 @@ class VideoDatabase:
             print(f"Error inserting videos: {e}")
         finally:
             if self.conn:
-                self.conn.close()       
+                self.conn.close()
+
+    def query_by_video_id(self, video_id):
+        try:
+            self.conn = mysql.connector.connect(**self.config)
+            cursor = self.conn.cursor()
+
+            cursor.execute('''
+                SELECT * FROM stats WHERE video_id = %s
+            ''', (video_id,))
+
+            result = cursor.fetchall()
+
+            return result
+
+        except Exception as e:
+            print(f"Error querying by video_id: {e}")
+            return None
+
+        finally:
+            if self.conn:
+                self.conn.close()
+
+    def performing_search(self, document):
+        vidstats_dict={}
+        video_id = document['videoInfo']['id']
+        sql_result = self.query_by_video_id(video_id)
+        if sql_result:
+            vidstats_dict[video_id] = {
+                'video_id': video_id,
+                'commentCount': sql_result[0][1],
+                'viewCount': sql_result[0][2],
+                'favoriteCount': sql_result[0][3],
+                'dislikeCount': sql_result[0][4],
+                'likeCount': sql_result[0][5]
+            }
+        
+        print("searching videoids successful")
+        return vidstats_dict
 
 if __name__ == "__main__":
     video_db =  VideoDatabase(user='root', password='Rey@nsh4', database='Course_Project')
