@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles1.css">
+    <title>Video Search Engine</title>
+</head>
+<body>
+    <div class="container">
+        <div class="search-panel-centered" id="searchPanel">
+            <div class="search-panel">
+                <input type="text" id="searchQuery" class="search-input" placeholder="Enter your search query">
+                <button onclick="searchVideos()" class="search-button">Search</button>
+            </div>
+        </div>
+        <div class="video-details">
+            <div class="current-video-panel" id="currentVideoPanel">
+                <h2 id="videoTitle"></h2>
+                <div id="currentVideoThumbnail"></div>
+            </div>
+            <div class="related-videos-panel" id="relatedVideosPanel"></div>
+        </div>
+    </div>
+
+    <script src="script1.js"></script>
+</body>
+</html>
