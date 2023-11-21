@@ -31,15 +31,9 @@ class VideoMongoDatabase:
                 {"videoInfo.snippet.localized.description": {"$regex": search_query, "$options": "i"}},
                 {"videoInfo.snippet.tags": {"$regex": search_query, "$options": "i"}}
             ]
-        },
-        {
-            "videoInfo.snippet.title": 10,
-            "videoInfo.snippet.localized.description": 2,
-            "videoInfo.snippet.tags": 7,
         }).limit(3)
         print("Search Completed Successsfully")
-        res_list = list(result)
-        return res_list
+        return result
 
 if __name__ == "__main__":
     video_mongo_db = VideoMongoDatabase(database_name='Course_Project')
