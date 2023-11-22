@@ -32,7 +32,6 @@ class VideoGraphDatabase:
 
                                 query_create_node = f"CREATE (:Video {{videoId: '{video_id}'}})"
                                 session.run(query_create_node)
-                                # Uncomment the following lines if you want to add tags as properties
                                 # for tag in tags:
                                 #     query_add_attribute = f"MATCH (v:Video {{videoId: '{video_id}'}}) SET v.{tag} = true"
                                 #     session.run(query_add_attribute)
