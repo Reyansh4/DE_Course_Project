@@ -1,29 +1,49 @@
 import os
 import json
-from py2neo import Graph
+from neo4j import GraphDatabase
 
 class VideoGraphDatabase:
     def __init__(self, uri, user, password):
-        self.graph = Graph(uri, auth=(user, password))
+        self._uri = uri
+        self._user = user
+        self._password = password
+        self._driver = None
+
+    def close(self):
+        if self._driver is not None:
+            self._driver.close()
+
+    def connect(self):
+        self._driver = GraphDatabase.driver(self._uri, auth=(self._user, self._password))
 
     def insert_videos(self, folder_path='test'):
-        for filename in os.listdir(folder_path):
-            if filename.endswith('.json'):
-                file_path = os.path.join(folder_path, filename)
-                with open(file_path, 'r') as file:
-                    data = json.load(file)
-                    video_id = data['videoInfo']['id']
-                    tags = data['videoInfo']['snippet']['tags']
+        with self._driver.session() as session:
+            for filename in os.listdir(folder_path):
+                if filename.endswith('.json'):
+                    file_path = os.path.join(folder_path, filename)
+                    with open(file_path, 'r') as file:
+                        data = json.load(file)
 
-                    query_create_node = f"CREATE (:Video {{videoId: '{video_id}'}})"
-                    self.graph.run(query_create_node)
+                        if 'videoInfo' in data and 'snippet' in data['videoInfo']:
+                            video_id = data['videoInfo']['id']
+                            
+                            if 'tags' in data['videoInfo']['snippet']:
+                                tags = [tag.replace(' ', '_') for tag in data['videoInfo']['snippet']['tags']]
 
-                    for tag in tags:
-                        query_add_attribute = f"MATCH (v:Video {{videoId: '{video_id}'}}) SET v.{tag} = true"
-                        self.graph.run(query_add_attribute)
-        
+                                query_create_node = f"CREATE (:Video {{videoId: '{video_id}'}})"
+                                session.run(query_create_node)
+                                # Uncomment the following lines if you want to add tags as properties
+                                # for tag in tags:
+                                #     query_add_attribute = f"MATCH (v:Video {{videoId: '{video_id}'}}) SET v.{tag} = true"
+                                #     session.run(query_add_attribute)
+                            else:
+                                print(f"No 'tags' key in 'snippet' for file: {filename}")
+                        else:
+                            print(f"Expected keys 'videoInfo' or 'snippet' not found for file: {filename}")
+
         print("Inserted the videos successfully")
 
 if __name__ == "__main__":
     neo4j_importer = VideoGraphDatabase(uri="bolt://localhost:7687", user="neo4j", password="Rey@nsh4")
+    neo4j_importer.connect()
     neo4j_importer.insert_videos()

@@ -87,6 +87,7 @@ class VideoDatabase:
 
     def performing_search(self, document):
         vidstats_dict={}
+
         video_id = document['videoInfo']['id']
         sql_result = self.query_by_video_id(video_id)
         if sql_result:
@@ -98,6 +99,7 @@ class VideoDatabase:
                 'dislikeCount': sql_result[0][4],
                 'likeCount': sql_result[0][5]
             }
+                
         return vidstats_dict
 
 if __name__ == "__main__":
