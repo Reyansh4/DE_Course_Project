@@ -30,11 +30,11 @@ class VideoGraphDatabase:
                             if 'tags' in data['videoInfo']['snippet']:
                                 tags = [tag.replace(' ', '_') for tag in data['videoInfo']['snippet']['tags']]
 
-                                query_create_node = f"CREATE (:Video {{videoId: '{video_id}'}})"
+                                query_create_node = f"""
+                                    MERGE (v:Video {{videoId: '{video_id}'}})
+                                    SET {', '.join([f'v.{tag} = true' for tag in tags])}
+                                """
                                 session.run(query_create_node)
-                                # for tag in tags:
-                                #     query_add_attribute = f"MATCH (v:Video {{videoId: '{video_id}'}}) SET v.{tag} = true"
-                                #     session.run(query_add_attribute)
                             else:
                                 print(f"No 'tags' key in 'snippet' for file: {filename}")
                         else:
