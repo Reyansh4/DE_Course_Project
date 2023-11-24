@@ -32,6 +32,7 @@ class VideoGraphDatabase:
 
                                 query_create_node = f"""
                                     MERGE (v:Video {{videoId: '{video_id}'}})
+                                    SET {', '.join([f'v.{tag} = true' for tag in tags])}
                                 """
                                 session.run(query_create_node)
                             else:
