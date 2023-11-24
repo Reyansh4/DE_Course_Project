@@ -65,14 +65,13 @@ class VideoSearchScreen(Screen):
         sm.current = 'result'
         mongo_var = VideoMongoDatabase(database_name='Course_Project')
         result = mongo_var.perform_search(search_query)
-        sql_var = VideoDatabase(user="root",password="Rey@nsh4", database="Course_Project")
+        #sql_var = VideoDatabase(user="root",password="Rey@nsh4", database="Course_Project")
         print(f"Search : {search_query}")
-        for document in result:
-            print(document)
-            stats_count = sql_var.performing_search(document)
-            print(stats_count)
-
-        
+        primary_video_id = result[0]['videoInfo']['id']
+        #for document in result:
+            #print(document)
+            #stats_count = sql_var.performing_search(document)
+            #print(stats_count)
 
 class SearchResultScreen(Screen):
     def __init__(self, **kwargs):
