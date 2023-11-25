@@ -12,11 +12,12 @@ from Mongo_db_setup import VideoMongoDatabase
 from Neo_db_setup import VideoGraphDatabase
 
 class VideoSearchScreen(Screen):
-    def __init__(self, video_db,video_mongo_db,neo_var,**kwargs):
+    def __init__(self, video_db, video_mongo_db, neo_var, **kwargs):
         super(VideoSearchScreen, self).__init__(**kwargs)
         self.video_db = video_db
         self.video_mongo_db = video_mongo_db
         self.neo_db = neo_var
+        self.id = 'search_screen'
         self.layout = BoxLayout(orientation='vertical', padding=[20, 50, 20, 50])
 
         with self.layout.canvas.before:
@@ -43,7 +44,7 @@ class VideoSearchScreen(Screen):
 
         self.search_button = Button(
             text='Search',
-            on_press=self.perform_search,
+            on_press=self.search_process,
             size_hint=(None, None),
             size=(200, 50),
             pos_hint={'center_x': 0.5},
@@ -59,32 +60,38 @@ class VideoSearchScreen(Screen):
         self.rect.pos = self.pos
         self.rect.size = self.size
 
-    def perform_search(self, instance):
+    def perform_search(self):
         search_query = self.search_query_panel.text
+        print(f"Search : {search_query}")
+        return search_query
+
+    def search_process(self, search_query=None):
+        search_query = self.perform_search()
+        mongo_var = VideoMongoDatabase(database_name='Course_Project')
+        result = mongo_var.perform_search(search_query)
+        sql_var = VideoDatabase(user="root", password="Rey@nsh4", database="Course_Project")
+        primary_video_id = []
+        primary_video_id = result[0]['videoInfo']['id']
+        Neo_var = VideoGraphDatabase(uri="bolt://localhost:7687", user="neo4j", password="Rey@nsh4")
+        other_video_ids = []
+        other_video_ids = Neo_var.get_most_connected_videos(primary_video_id)
+        req_video_ids = []
+        req_video_ids.append(primary_video_id)
+        data_from_mongo = {}
+        for i in range(0, len(other_video_ids)):
+            req_video_ids.append(other_video_ids[i])
+        for vid in req_video_ids:
+            info = mongo_var.get_info(vid)
+            stats_count = sql_var.performing_search(vid)
+            combined_data = {**info, **stats_count}
+            data_from_mongo[vid] = combined_data
         app = App.get_running_app()
         sm = app.root
         sm.transition.direction = 'left'
         sm.current = 'result'
-        print(f"Search : {search_query}")
-        mongo_var = VideoMongoDatabase(database_name='Course_Project')
-        result = mongo_var.perform_search(search_query)
-        sql_var = VideoDatabase(user="root",password="Rey@nsh4", database="Course_Project")
-        primary_video_id = result[0]['videoInfo']['id']
-        Neo_var = VideoGraphDatabase(uri="bolt://localhost:7687", user="neo4j", password="Rey@nsh4")
-        other_video_ids = Neo_var.get_most_connected_videos(primary_video_id)
-        req_video_ids = []
-        req_video_ids.append(primary_video_id)
-        data_from_mongo ={}
-        for i in range(0,len(other_video_ids)):
-            req_video_ids.append(other_video_ids[i])
-        for vid in req_video_ids:
-            info = mongo_var.get_info(vid)
-            #print("The info for the document is : \n",info)
-            stats_count = sql_var.performing_search(vid)
-            #print("The related stats are : \n",stats_count)
-            combined_data = {**info, **stats_count}
-            data_from_mongo[vid] = combined_data
-            print("Printed data from dict from dictionary ",data_from_mongo)
+        #print("The Keys in the dictionary", list(data_from_mongo.keys()))
+        result_screen = sm.get_screen('result')
+        result_screen.update_data(data_from_mongo)
 
 class SearchResultScreen(Screen):
     def __init__(self, **kwargs):
@@ -105,69 +112,96 @@ class SearchResultScreen(Screen):
         self.video_description_layout.add_widget(self.back_button)
         self.video_description_layout.add_widget(self.video_description)
 
-        data_from_mongo = [
-            {'title': 'Video 2', 'details': 'Details 2', 'info': 'data2',
-             'thumbnail': 'https://akm-img-a-in.tosshub.com/indiatoday/images/story/media_bank/202309/second-track-badass-from-thalapathy-vijays-leo-will-release-on-september-28-272346380-16x9.jpg?VersionId=XpzDqWNDkrtBevS0gfdJg3BF6FBvZw9C'},
-            {'title': 'Video 1', 'details': 'Details 1', 'info': 'data1',
-             'thumbnail': 'https://akm-img-a-in.tosshub.com/indiatoday/images/story/media_bank/202309/second-track-badass-from-thalapathy-vijays-leo-will-release-on-september-28-272346380-16x9.jpg?VersionId=XpzDqWNDkrtBevS0gfdJg3BF6FBvZw9C'},
-            {'title': 'Video 3', 'details': 'Details 3', 'info': 'data3',
-             'thumbnail': 'https://akm-img-a-in.tosshub.com/indiatoday/images/story/media_bank/202309/second-track-badass-from-thalapathy-vijays-leo-will-release-on-september-28-272346380-16x9.jpg?VersionId=XpzDqWNDkrtBevS0gfdJg3BF6FBvZw9C'}
-        ]
-
         self.thumbnail_layout = GridLayout(cols=1, size_hint=(0.3, 1))
-        for i, video_data in enumerate(data_from_mongo):
-            thumbnail = AsyncImage(source=video_data['thumbnail'])
-            thumbnail.size_hint = (1, None)
-            thumbnail.height = 300
-            thumbnail.idx = i
-            thumbnail.bind(on_touch_down=self.show_info)
-            self.thumbnail_layout.add_widget(thumbnail)
-
-        self.title_details_layout = BoxLayout(orientation='vertical', size_hint=(0.3, 1))
-        for video_data in data_from_mongo:
-            info_layout = BoxLayout(orientation='vertical', size_hint_x=0.8)
-
-            title_label = Label(text=video_data['title'])
-            info_layout.add_widget(title_label)
-
-            details_label = Label(text=video_data['details'])
-            info_layout.add_widget(details_label)
-
-            self.title_details_layout.add_widget(info_layout)
 
         self.layout.add_widget(self.video_description_layout)
         self.layout.add_widget(self.thumbnail_layout)
-        self.layout.add_widget(self.title_details_layout)
 
         self.add_widget(self.layout)
+
+        self.data_from_mongo ={}
 
     def go_back(self, instance):
         app = App.get_running_app()
         sm = app.root
         sm.transition.direction = 'right'
         sm.current = 'search'
+        self.data_from_mongo = {}
 
     def show_info(self, instance, touch):
         if touch.button == 'left' and instance.collide_point(*touch.pos):
             thumbnail_idx = instance.idx
-            data_from_mongo = [
-                {'title': 'Video 2', 'details': 'Details 2', 'info': 'data2',
-                'thumbnail': 'https://akm-img-a-in.tosshub.com/indiatoday/images/story/media_bank/202309/second-track-badass-from-thalapathy-vijays-leo-will-release-on-september-28-272346380-16x9.jpg?VersionId=XpzDqWNDkrtBevS0gfdJg3BF6FBvZw9C'},
-                {'title': 'Video 1', 'details': 'Details 1', 'info': 'data1',
-                'thumbnail': 'https://akm-img-a-in.tosshub.com/indiatoday/images/story/media_bank/202309/second-track-badass-from-thalapathy-vijays-leo-will-release-on-september-28-272346380-16x9.jpg?VersionId=XpzDqWNDkrtBevS0gfdJg3BF6FBvZw9C'},
-                {'title': 'Video 3', 'details': 'Details 3', 'info': 'data3',
-                'thumbnail': 'https://akm-img-a-in.tosshub.com/indiatoday/images/story/media_bank/202309/second-track-badass-from-thalapathy-vijays-leo-will-release-on-september-28-272346380-16x9.jpg?VersionId=XpzDqWNDkrtBevS0gfdJg3BF6FBvZw9C'}
-            ]
-            
-            self.video_description.text = f"Info: {data_from_mongo[thumbnail_idx]['info']}"
+            try:
+                video_id = list(self.data_from_mongo.keys())[thumbnail_idx]
+                video_data = self.data_from_mongo[video_id]
+                
+                if 'videoInfo' in video_data:
+                    video_info = video_data['videoInfo']
+                    if 'snippet' in video_info:
+                        snippet = video_info['snippet']
+                        thumbnail_url = snippet.get('thumbnails', {}).get('high', {}).get('url', '')
+                        title = snippet.get('title', '')
+                        kind = video_info.get('kind', '')
+                        etag = video_info.get('etag', '')
+                        channel_id = snippet.get('channelId', '')
+                        published_at = snippet.get('publishedAt', '')
+                        live_broadcast_content = snippet.get('liveBroadcastContent', '')
+                        channel_title = snippet.get('channelTitle', '')
+                        cat_id = snippet.get('categoryId', '')
+                        commentCount = video_data.get('commentCount', {})
+                        viewCount = video_data.get('viewCount', {})
+                        favoriteCount = video_data.get('favoriteCount', {})
+                        dislikeCount = video_data.get('dislikeCount', {})
+                        likeCount = video_data.get('likeCount', {})
+                        self.video_description.text = (
+                            f"Title: {title}\n"
+                            f"Published_at: {published_at}\n"
+                            f"Broadcast: {live_broadcast_content}\n"
+                            f"Channel: {channel_title}\n"
+                            f"Kind: {kind}\n"
+                            f"Channel_id: {channel_id}\n"
+                            f"Category_id: {cat_id}\n"
+                            f"Etag: {etag}\n"
+                            f"ID: {video_id}\n"
+                            f"URL: {thumbnail_url}\n"
+                            "Statistics:\n"
+                            f"commentcount: {commentCount}\n"
+                            f"viewcount: {viewCount}\n"
+                            f"favoriteCount: {favoriteCount}\n"
+                            f"dislikeCount: {dislikeCount}\n"
+                            f"likeCount: {likeCount}\n"
+                        )
+                    else:
+                        print("Error: 'snippet' key not found in video_info")
+                else:
+                    print(f"Error: 'videoInfo' key not found in data_from_mongo at index {thumbnail_idx}")
+            except (IndexError, KeyError) as e:
+                print(f"Error: {e}. Couldn't find 'videoInfo' in data_from_mongo at index {thumbnail_idx}")
+
+    def update_data(self, data_from_mongo):
+        #print("Dictionary imported from other place", data_from_mongo)
+        self.thumbnail_layout.clear_widgets()
+        self.video_description.text = ""
+        self.data_from_mongo = data_from_mongo
+        for i, video_id in enumerate(self.data_from_mongo):
+            video_data = self.data_from_mongo[video_id]
+            thumbnail_url = video_data['videoInfo']['snippet']['thumbnails']['high']['url']
+            thumbnail = AsyncImage(source=thumbnail_url)
+            thumbnail.size_hint = (1, None)
+            thumbnail.height = 300
+            thumbnail.idx = i
+            thumbnail.bind(on_touch_down=self.show_info)
+            self.thumbnail_layout.add_widget(thumbnail)
+            info_layout = BoxLayout(orientation='vertical', size_hint_x=0.8)
+            self.add_widget(info_layout)
 
 class VideoSearchApp(App):
     def build(self):
         sm = ScreenManager()
-        video_db =  VideoDatabase(user='root', password='Rey@nsh4', database='Course_Project')
+        video_db = VideoDatabase(user='root', password='Rey@nsh4', database='Course_Project')
         video_mongo_db = VideoMongoDatabase(database_name='Course_Project')
         neo_var = VideoGraphDatabase(uri="bolt://localhost:7687", user="neo4j", password="Rey@nsh4")
-        search_screen = VideoSearchScreen(video_db=video_db, video_mongo_db=video_mongo_db, neo_var = neo_var, name='search')
+        search_screen = VideoSearchScreen(video_db=video_db, video_mongo_db=video_mongo_db, neo_var=neo_var, name='search')
         result_screen = SearchResultScreen(name='result')
         sm.add_widget(search_screen)
         sm.add_widget(result_screen)
