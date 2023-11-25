@@ -76,7 +76,6 @@ class VideoSearchScreen(Screen):
         req_video_ids.append(primary_video_id)
         for i in range(0,len(other_video_ids)):
             req_video_ids.append(other_video_ids[i])
-        #print(req_video_ids)
         for vid in req_video_ids:
             info = mongo_var.get_info(vid)
             print("The info for the document is : \n",info)
