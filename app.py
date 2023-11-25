@@ -9,12 +9,14 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.image import AsyncImage
 from SQL_db_setup import VideoDatabase
 from Mongo_db_setup import VideoMongoDatabase
+from Neo_db_setup import VideoGraphDatabase
 
 class VideoSearchScreen(Screen):
-    def __init__(self, video_db,video_mongo_db,**kwargs):
+    def __init__(self, video_db,video_mongo_db,neo_var,**kwargs):
         super(VideoSearchScreen, self).__init__(**kwargs)
         self.video_db = video_db
         self.video_mongo_db = video_mongo_db
+        self.neo_db = neo_var
         self.layout = BoxLayout(orientation='vertical', padding=[20, 50, 20, 50])
 
         with self.layout.canvas.before:
@@ -63,11 +65,14 @@ class VideoSearchScreen(Screen):
         sm = app.root
         sm.transition.direction = 'left'
         sm.current = 'result'
+        print(f"Search : {search_query}")
         mongo_var = VideoMongoDatabase(database_name='Course_Project')
         result = mongo_var.perform_search(search_query)
         #sql_var = VideoDatabase(user="root",password="Rey@nsh4", database="Course_Project")
-        print(f"Search : {search_query}")
         primary_video_id = result[0]['videoInfo']['id']
+        Neo_var = VideoGraphDatabase(uri="bolt://localhost:7687", user="neo4j", password="Rey@nsh4")
+        other_video_ids = Neo_var.get_most_connected_videos(primary_video_id)
+        print(other_video_ids)
         #for document in result:
             #print(document)
             #stats_count = sql_var.performing_search(document)
@@ -153,7 +158,9 @@ class VideoSearchApp(App):
         sm = ScreenManager()
         video_db =  VideoDatabase(user='root', password='Rey@nsh4', database='Course_Project')
         video_mongo_db = VideoMongoDatabase(database_name='Course_Project')
-        search_screen = VideoSearchScreen(video_db=video_db, video_mongo_db=video_mongo_db, name='search')
+        neo_var = VideoGraphDatabase(uri="bolt://localhost:7687", user="neo4j", password="Rey@nsh4")
+        neo_var.connect()
+        search_screen = VideoSearchScreen(video_db=video_db, video_mongo_db=video_mongo_db, neo_var = neo_var, name='search')
         result_screen = SearchResultScreen(name='result')
         sm.add_widget(search_screen)
         sm.add_widget(result_screen)
