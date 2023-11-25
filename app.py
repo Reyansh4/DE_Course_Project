@@ -72,7 +72,11 @@ class VideoSearchScreen(Screen):
         primary_video_id = result[0]['videoInfo']['id']
         Neo_var = VideoGraphDatabase(uri="bolt://localhost:7687", user="neo4j", password="Rey@nsh4")
         other_video_ids = Neo_var.get_most_connected_videos(primary_video_id)
-        print(other_video_ids)
+        req_video_ids = []
+        req_video_ids.append(primary_video_id)
+        for i in range(0,len(other_video_ids)):
+            req_video_ids.append(other_video_ids[i])
+        print(req_video_ids)
         #for document in result:
             #print(document)
             #stats_count = sql_var.performing_search(document)
