@@ -85,14 +85,12 @@ class VideoDatabase:
             if self.conn:
                 self.conn.close()
 
-    def performing_search(self, document):
+    def performing_search(self, vid):
         vidstats_dict={}
-
-        video_id = document['videoInfo']['id']
-        sql_result = self.query_by_video_id(video_id)
+        sql_result = self.query_by_video_id(vid)
         if sql_result:
-            vidstats_dict[video_id] = {
-                'video_id': video_id,
+            vidstats_dict[vid] = {
+                'video_id': vid,
                 'commentCount': sql_result[0][1],
                 'viewCount': sql_result[0][2],
                 'favoriteCount': sql_result[0][3],

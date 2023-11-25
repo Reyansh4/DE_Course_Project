@@ -68,7 +68,7 @@ class VideoSearchScreen(Screen):
         print(f"Search : {search_query}")
         mongo_var = VideoMongoDatabase(database_name='Course_Project')
         result = mongo_var.perform_search(search_query)
-        #sql_var = VideoDatabase(user="root",password="Rey@nsh4", database="Course_Project")
+        sql_var = VideoDatabase(user="root",password="Rey@nsh4", database="Course_Project")
         primary_video_id = result[0]['videoInfo']['id']
         Neo_var = VideoGraphDatabase(uri="bolt://localhost:7687", user="neo4j", password="Rey@nsh4")
         other_video_ids = Neo_var.get_most_connected_videos(primary_video_id)
@@ -76,11 +76,12 @@ class VideoSearchScreen(Screen):
         req_video_ids.append(primary_video_id)
         for i in range(0,len(other_video_ids)):
             req_video_ids.append(other_video_ids[i])
-        print(req_video_ids)
-        #for document in result:
-            #print(document)
-            #stats_count = sql_var.performing_search(document)
-            #print(stats_count)
+        #print(req_video_ids)
+        for vid in req_video_ids:
+            info = mongo_var.get_info(vid)
+            print("The info for the document is : \n",info)
+            stats_count = sql_var.performing_search(vid)
+            print("The related stats are : \n",stats_count)
 
 class SearchResultScreen(Screen):
     def __init__(self, **kwargs):

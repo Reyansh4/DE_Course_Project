@@ -37,6 +37,14 @@ class VideoMongoDatabase:
         }).limit(1)
         print("Search Completed Successsfully")
         return list(result)
+    
+    def get_info(self,vid):
+        client =MongoClient('mongodb://localhost:27017/')
+        db = client['Course_Project']
+        result = db['videos'].find_one({
+            'videoInfo.id': vid
+        })
+        return result
 
 if __name__ == "__main__":
     video_mongo_db = VideoMongoDatabase(database_name='Course_Project')
