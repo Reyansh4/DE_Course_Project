@@ -159,7 +159,6 @@ class VideoSearchApp(App):
         video_db =  VideoDatabase(user='root', password='Rey@nsh4', database='Course_Project')
         video_mongo_db = VideoMongoDatabase(database_name='Course_Project')
         neo_var = VideoGraphDatabase(uri="bolt://localhost:7687", user="neo4j", password="Rey@nsh4")
-        neo_var.connect()
         search_screen = VideoSearchScreen(video_db=video_db, video_mongo_db=video_mongo_db, neo_var = neo_var, name='search')
         result_screen = SearchResultScreen(name='result')
         sm.add_widget(search_screen)
