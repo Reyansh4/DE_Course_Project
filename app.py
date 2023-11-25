@@ -74,13 +74,17 @@ class VideoSearchScreen(Screen):
         other_video_ids = Neo_var.get_most_connected_videos(primary_video_id)
         req_video_ids = []
         req_video_ids.append(primary_video_id)
+        data_from_mongo ={}
         for i in range(0,len(other_video_ids)):
             req_video_ids.append(other_video_ids[i])
         for vid in req_video_ids:
             info = mongo_var.get_info(vid)
-            print("The info for the document is : \n",info)
+            #print("The info for the document is : \n",info)
             stats_count = sql_var.performing_search(vid)
-            print("The related stats are : \n",stats_count)
+            #print("The related stats are : \n",stats_count)
+            combined_data = {**info, **stats_count}
+            data_from_mongo[vid] = combined_data
+            print("Printed data from dict from dictionary ",data_from_mongo)
 
 class SearchResultScreen(Screen):
     def __init__(self, **kwargs):

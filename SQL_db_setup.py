@@ -89,7 +89,7 @@ class VideoDatabase:
         vidstats_dict={}
         sql_result = self.query_by_video_id(vid)
         if sql_result:
-            vidstats_dict[vid] = {
+            vidstats_dict = {
                 'video_id': vid,
                 'commentCount': sql_result[0][1],
                 'viewCount': sql_result[0][2],
