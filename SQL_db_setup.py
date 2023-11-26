@@ -12,6 +12,7 @@ class VideoDatabase:
             'database': database,
         }
         self.create_table()
+        self.analytics_table()
 
     def create_table(self):
         try:
@@ -99,7 +100,64 @@ class VideoDatabase:
             }
                 
         return vidstats_dict
+    
+    def analytics_table(self):
+        try:
+            self.conn = mysql.connector.connect(**self.config)
+            cursor = self.conn.cursor()
+
+            cursor.execute('''
+                           CREATE TABLE IF NOT EXISTS engagement (
+                            video_id VARCHAR(255) PRIMARY KEY,
+                            engagement INT,
+                            engagement_ratio VARCHAR(10),
+                            clash_of_tastes VARCHAR(10),
+                            FOREIGN KEY (video_id) REFERENCES stats(video_id)
+                           );
+                           ''')
+        
+        except Exception as e:
+            print(f"Error creating table: {e}")
+        finally:
+            if self.conn:
+                self.conn.close()
+
+    def insert_engagement_details(self, folder_path='test'):
+        try:
+            self.conn = mysql.connector.connect(**self.config)
+            cursor = self.conn.cursor()
+
+            for filename in os.listdir(folder_path):
+                if filename.endswith('.json'):
+                    file_path = os.path.join(folder_path, filename)
+                    with open(file_path, 'r') as file:
+                        data = json.load(file)
+                        video_id = data['videoInfo']['id']
+                        # No need to fetch statistics here, as you're using a SELECT statement below
+                        cursor.execute('''
+                            INSERT INTO engagement (video_id, engagement, engagement_ratio, clash_of_tastes)
+                            SELECT
+                                s.video_id,
+                                (s.viewCount + s.likeCount + s.dislikeCount) AS engagement,
+                                CASE WHEN s.likeCount >= s.viewCount / 10 THEN 'good' ELSE 'poor' END AS engagement_ratio,
+                                CASE WHEN (s.likeCount - s.dislikeCount) >= 0 THEN 'Liking' ELSE 'disliking' END AS clash_of_tastes
+                            FROM stats s
+                            WHERE s.video_id = %s
+                                       AND NOT EXISTS (
+                                       SELECT 1 FROM engagement e where e.video_id = s.video_id
+                                       )
+                        ''', (video_id,))
+
+                        self.conn.commit()
+
+            print("Engagement Table created successfully!")
+        except Exception as e:
+            print(f"Error inserting engagement details: {e}")
+        finally:
+            if self.conn:
+                self.conn.close()
 
 if __name__ == "__main__":
     video_db =  VideoDatabase(user='root', password='Rey@nsh4', database='Course_Project')
     video_db.insert_videos()
+    video_db.insert_engagement_details()
