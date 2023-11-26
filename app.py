@@ -1,3 +1,4 @@
+import webbrowser
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.textinput import TextInput
@@ -140,7 +141,8 @@ class SearchResultScreen(Screen):
                     video_info = video_data['videoInfo']
                     if 'snippet' in video_info:
                         snippet = video_info['snippet']
-                        thumbnail_url = snippet.get('thumbnails', {}).get('high', {}).get('url', '')
+                        thumbnail_url = self.open_thumbnail_link(snippet)
+                        #print(thumbnail_url)
                         title = snippet.get('title', '')
                         kind = video_info.get('kind', '')
                         etag = video_info.get('etag', '')
@@ -180,7 +182,7 @@ class SearchResultScreen(Screen):
                             f"engagement_ratio: {engagement_ratio}\n"
                             f"clash_of_tastes: {clash_of_tastes}\n"
                             "Recommended Hashtag:\n"
-                            f"Hashtags: {tags[:3]}"
+                            f"{tags[:3]}"
                         )
                     else:
                         print("Error: 'snippet' key not found in video_info")
@@ -205,6 +207,21 @@ class SearchResultScreen(Screen):
             self.thumbnail_layout.add_widget(thumbnail)
             info_layout = BoxLayout(orientation='vertical', size_hint_x=0.8)
             self.add_widget(info_layout)
+
+    def open_link(self, link = None):
+        #print(link)
+        webbrowser.open(link)
+    
+    def open_thumbnail_link(self, snippet):
+        thumbnail_sizes = ['maxres', 'standard', 'high']
+
+        for size in thumbnail_sizes:
+            thumbnail_url = snippet.get('thumbnails', {}).get(size, {}).get('url', '')
+            if thumbnail_url:
+                self.open_link(thumbnail_url)
+                return thumbnail_url
+        else:
+            print("No valid thumbnail URL found")
 
 class VideoSearchApp(App):
     def build(self):
