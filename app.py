@@ -157,6 +157,7 @@ class SearchResultScreen(Screen):
                         engagement = video_data.get('engagement', {})
                         engagement_ratio = video_data.get('engagement_ratio', {})
                         clash_of_tastes = video_data.get('clash_of_tastes', {})
+                        tags = snippet.get('tags', {})
                         self.video_description.text = (
                             f"Title: {title}\n"
                             f"Published_at: {published_at}\n"
@@ -174,9 +175,12 @@ class SearchResultScreen(Screen):
                             f"favoriteCount: {favoriteCount}\n"
                             f"dislikeCount: {dislikeCount}\n"
                             f"likeCount: {likeCount}\n"
+                            "Engagement Analytics:\n"
                             f"engagement: {engagement}\n"
                             f"engagement_ratio: {engagement_ratio}\n"
-                            f"clash_of_tastes: {clash_of_tastes}"
+                            f"clash_of_tastes: {clash_of_tastes}\n"
+                            "Recommended Hashtag:\n"
+                            f"Hashtags: {tags[:3]}"
                         )
                     else:
                         print("Error: 'snippet' key not found in video_info")
