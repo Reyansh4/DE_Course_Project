@@ -83,7 +83,8 @@ class VideoSearchScreen(Screen):
         for vid in req_video_ids:
             info = mongo_var.get_info(vid)
             stats_count = sql_var.performing_search(vid)
-            combined_data = {**info, **stats_count}
+            engagement_count = sql_var.performing_search_2(vid)
+            combined_data = {**info, **stats_count, **engagement_count}
             data_from_mongo[vid] = combined_data
         app = App.get_running_app()
         sm = app.root
@@ -153,6 +154,9 @@ class SearchResultScreen(Screen):
                         favoriteCount = video_data.get('favoriteCount', {})
                         dislikeCount = video_data.get('dislikeCount', {})
                         likeCount = video_data.get('likeCount', {})
+                        engagement = video_data.get('engagement', {})
+                        engagement_ratio = video_data.get('engagement_ratio', {})
+                        clash_of_tastes = video_data.get('clash_of_tastes', {})
                         self.video_description.text = (
                             f"Title: {title}\n"
                             f"Published_at: {published_at}\n"
@@ -170,6 +174,9 @@ class SearchResultScreen(Screen):
                             f"favoriteCount: {favoriteCount}\n"
                             f"dislikeCount: {dislikeCount}\n"
                             f"likeCount: {likeCount}\n"
+                            f"engagement: {engagement}\n"
+                            f"engagement_ratio: {engagement_ratio}\n"
+                            f"clash_of_tastes: {clash_of_tastes}"
                         )
                     else:
                         print("Error: 'snippet' key not found in video_info")

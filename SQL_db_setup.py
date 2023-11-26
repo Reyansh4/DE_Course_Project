@@ -86,6 +86,27 @@ class VideoDatabase:
             if self.conn:
                 self.conn.close()
 
+    def query_by_video_id_2(self, video_id):
+        try:
+            self.conn = mysql.connector.connect(**self.config)
+            cursor = self.conn.cursor()
+
+            cursor.execute('''
+                SELECT * FROM engagement WHERE video_id = %s
+            ''', (video_id,))
+
+            result = cursor.fetchall()
+
+            return result
+
+        except Exception as e:
+            print(f"Error querying by video_id: {e}")
+            return None
+
+        finally:
+            if self.conn:
+                self.conn.close()
+
     def performing_search(self, vid):
         vidstats_dict={}
         sql_result = self.query_by_video_id(vid)
@@ -100,6 +121,19 @@ class VideoDatabase:
             }
                 
         return vidstats_dict
+    
+    def performing_search_2(self, vid):
+        engmnts_dict={}
+        sql_result = self.query_by_video_id_2(vid)
+        if sql_result:
+            engmnts_dict = {
+                'video_id': vid,
+                'engagement': sql_result[0][1],
+                'engagement_ratio': sql_result[0][2],
+                'clash_of_tastes': sql_result[0][3]
+            }
+                
+        return engmnts_dict
     
     def analytics_table(self):
         try:
