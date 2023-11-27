@@ -37,7 +37,7 @@ class VideoSearchScreen(Screen):
         )
 
         self.search_label = Label(
-            text='SEARCH',
+            text='VIDEO SEARCH',
             font_size=40,
             halign='center',
             valign='middle'
