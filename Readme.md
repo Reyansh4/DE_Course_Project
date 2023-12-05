@@ -16,4 +16,5 @@ video relationships, and MySQL for storing relational information, including cru
 [![dependency - neo4j](https://img.shields.io/badge/dependency-neo4j-green)](https://pypi.org/project/neo4j)
 [![dependency - pymongo](https://img.shields.io/badge/dependency-pymongo-green)](https://pypi.org/project/pymongo)
 
-# **
+# **USAGE**
+The way to use the app is clearly described in the [Presentation](Presentation.pdf)
