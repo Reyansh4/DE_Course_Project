@@ -29,74 +29,8 @@ The way to use the app is clearly described in the [Presentation](Presentation.p
 Our logic behind the working was Initially we search the Keyword that is typed in the Search Query. That Keyword is searched in the MongoDB for the first best result. The queried VideoID is returned. The VideoId's is then used and queried in the Neo4j DB for the Related videos and this will return the videoID's we then query the details of the returned videoID's. The MongoDB returns the other data related to the specific videoID and the MySQL database returnd the statistics in stored for the particular videoID.
 
 ## **DATASET**
-The Dataset is available [here](dataset.tar.gz). Extract the .tar .gz file and retrive the .json files. There are 500 .json file zipped in the tar file. Both the tar and dataset are available in the Repository for the easy demonstration purpose. The format in which the .json files contains the data is represented below.
+The Dataset is available [here](dataset.tar.gz). Extract the .tar .gz file and retrive the .json files. There are 500 .json file zipped in the tar file. Both the [tar](dataset.tar.gz) and [dataset](test) are available in the Repository for the easy demonstration purpose. The format in which the .json files contains the data is represented below.
 
-{
-    "videoInfo": {
-        "snippet": {
-            "thumbnails": {
-                "default": {
-                    "url": "https://i.ytimg.com/vi/_-Qxl9eE8Mk/default.jpg", 
-                    "width": 120, 
-                    "height": 90
-                }, 
-                "high": {
-                    "url": "https://i.ytimg.com/vi/_-Qxl9eE8Mk/hqdefault.jpg", 
-                    "width": 480, 
-                    "height": 360
-                }, 
-                "medium": {
-                    "url": "https://i.ytimg.com/vi/_-Qxl9eE8Mk/mqdefault.jpg", 
-                    "width": 320, 
-                    "height": 180
-                }, 
-                "maxres": {
-                    "url": "https://i.ytimg.com/vi/_-Qxl9eE8Mk/maxresdefault.jpg", 
-                    "width": 1280, 
-                    "height": 720
-                }, 
-                "standard": {
-                    "url": "https://i.ytimg.com/vi/_-Qxl9eE8Mk/sddefault.jpg", 
-                    "width": 640, 
-                    "height": 480
-                }
-            }, 
-            "tags": [
-                "top news", 
-                "news in hindi", 
-                "hindi news", 
-                "today's news", 
-                "delhi news", 
-                "best news", 
-                "aajtak", 
-                "aajtak news", 
-                "latest news", 
-                "latest hindi news", 
-                "Pepper media"
-            ], 
-            "channelId": "UCt4t-jeY85JegMlZ-E5UWtA", 
-            "publishedAt": "2016-09-19T06:25:30.000Z", 
-            "liveBroadcastContent": "none", 
-            "channelTitle": "Aaj Tak", 
-            "title": "20 Jawans Injured In Uri Attack, Rajnath Singh To Submit Report To PM Modi Today", 
-            "categoryId": "25", 
-            "localized": {
-                "description": "Follow us:\nYouTube: https://www.youtube.com/user/aajtaktv?sub_confirmation=1\nTwitter: https://twitter.com/aajtak\nFacebook: http://www.facebook.com/aajtak\n\nTags: Fast News,Breaking News,Top Headlines,Super fast news,Khabare Superfast,Superfast!,news,sensational news,political news,sports news,Super fast,Jawaharlal Nehru University,controversy,students,union leader,sedition,anti-national\u2019 slogans,Parliament attack,Kanhaiya Kumar,Rohith Vemula,Manish Sisodia,Nirbhaya Case,protests,Juvenile,Delhi Gang Rapist,DUSU,Delhi University Students Union,Jawaharlal Nehru University Students Union,JNUSU,Jantar Mantar,demonstrations,Union Finance Minister,Quota ,Arun Jaitley,criminal,defamation,Delhi Chief Minister,Patiala House,AAP,Arvind Kejriwal,DDCA,Salman Khan,Acquittal,Salman Khan (Film Actor),Bollywood,Bollywood Str,Asaduddin,Owaisi,AIMIM,Bharat Mata Ki Jai,RSS,Bombay High Court,Congress,Sonia Gandhi,Rahul Gandhi,trial court,National Herald case,Gandhi,Congress,BJP,National Herald,Subramanian Swamy,Pakistan,Narendra Modi,Nawaz Sharif,Pakistani Terrorists,Pathankot,Uttarakhand", 
-                "title": "20 Jawans Injured In Uri Attack, Rajnath Singh To Submit Report To PM Modi Today"
-            }, 
-            "description": "Follow us:\nYouTube: https://www.youtube.com/user/aajtaktv?sub_confirmation=1\nTwitter: https://twitter.com/aajtak\nFacebook: http://www.facebook.com/aajtak\n\nTags: Fast News,Breaking News,Top Headlines,Super fast news,Khabare Superfast,Superfast!,news,sensational news,political news,sports news,Super fast,Jawaharlal Nehru University,controversy,students,union leader,sedition,anti-national\u2019 slogans,Parliament attack,Kanhaiya Kumar,Rohith Vemula,Manish Sisodia,Nirbhaya Case,protests,Juvenile,Delhi Gang Rapist,DUSU,Delhi University Students Union,Jawaharlal Nehru University Students Union,JNUSU,Jantar Mantar,demonstrations,Union Finance Minister,Quota ,Arun Jaitley,criminal,defamation,Delhi Chief Minister,Patiala House,AAP,Arvind Kejriwal,DDCA,Salman Khan,Acquittal,Salman Khan (Film Actor),Bollywood,Bollywood Str,Asaduddin,Owaisi,AIMIM,Bharat Mata Ki Jai,RSS,Bombay High Court,Congress,Sonia Gandhi,Rahul Gandhi,trial court,National Herald case,Gandhi,Congress,BJP,National Herald,Subramanian Swamy,Pakistan,Narendra Modi,Nawaz Sharif,Pakistani Terrorists,Pathankot,Uttarakhand"
-        }, 
-        "kind": "youtube#video", 
-        "statistics": {
-            "commentCount": 1, 
-            "viewCount": 5905, 
-            "favoriteCount": 0, 
-            "dislikeCount": 1, 
-            "likeCount": "6"
-        }, 
-        "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/wA0x3F2EZ4f29zQDJx_2_piNN6A\"", 
-        "id": "_-Qxl9eE8Mk"
-    }
-}
+
 
 **HAPPY CODING!!!....**
