@@ -31,6 +31,6 @@ Our logic behind the working was Initially we search the Keyword that is typed i
 ## **DATASET**
 The Dataset is available [here](dataset.tar.gz). Extract the .tar .gz file and retrive the .json files. There are 500 .json file zipped in the tar file. Both the tar and dataset are available in the Repository for the easy demonstration purpose. The format in which the .json files contains the data is represented below.
 
-[2023-12-05.png]
+
 
 **HAPPY CODING!!!....**
