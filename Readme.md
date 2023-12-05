@@ -16,5 +16,14 @@ video relationships, and MySQL for storing relational information, including cru
 [![dependency - neo4j](https://img.shields.io/badge/dependency-neo4j-green)](https://pypi.org/project/neo4j)
 [![dependency - pymongo](https://img.shields.io/badge/dependency-pymongo-green)](https://pypi.org/project/pymongo)
 
-# **USAGE**
-The way to use the app is clearly described in the [Presentation](Presentation.pdf)
+# **WORKING**</br>
+## **USAGE**
+The way to use the app is clearly described in the [Presentation](Presentation.pdf).</br>
+
+## **SETTING UP THE DB'S**
+* The SQL is setup by using the MySQL-connector-python and initially we create two tables named as STATS and ENGAGEMENT and query in the above tables. Thw stats part in the .json files is stored in the SQLDB.</br>
+* The MongoDB is used for the querying the keyword and return the best matching document videoID. Initially the data in MongoDB is added by the PyMongo Library. The complete document is stored in the DB excluding the stats part in the .json file.</br>
+* The Neo4j is used to get the related videos to the searched videoID. Our DB has a node for every videoID. The node has attributes like videoID,Title,Tags,channelType as the node properties. so we used the **TAG CLUSTERING** to get the related videos. Every node is related to another node if they have same tags and the relation that is formed is [:RELATED]. this later helps us in getting the recommended videos. with a single videoId we get the other related videoID's.
+
+## **BACKEND LOGIC**
+Our logic behind the working was Initially we search the Keyword that is typed in the Search Query. That Keyword is searched in the MongoDB for the first best result. The queried VideoID is returned. The VideoId's is then used and queried in the Neo4j DB for the Related videos and this will return the videoID we then query the details of the returned videoID's. The MongoDB returns the other data realted to the specific videoID and the MySQL database returnd the statistics in stored for the particular videoID.
