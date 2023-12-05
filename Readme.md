@@ -29,7 +29,7 @@ The way to use the app is clearly described in the [Presentation](Presentation.p
 Our logic behind the working was Initially we search the Keyword that is typed in the Search Query. That Keyword is searched in the MongoDB for the first best result. The queried VideoID is returned. The VideoId's is then used and queried in the Neo4j DB for the Related videos and this will return the videoID's we then query the details of the returned videoID's. The MongoDB returns the other data related to the specific videoID and the MySQL database returnd the statistics in stored for the particular videoID.
 
 ## **DATASET**
-The Dataset is available [here](dataset.tar.gz). Extract the .tar .gz file and retrive the .json files. There are 500 .json file zipped in the tar file. Both the tar and dataset are available in the Repository for the easy demonstration purpose. The format in which the .json files contains the data is represented below.
+The Dataset is available [here](dataset.tar.gz). Extract the .tar .gz file and retrive the .json files. There are 500 .json file zipped in the tar file. Both the [tar](datset.tar.gz) and [dataset](test) are available in the Repository for the easy demonstration purpose. The format in which the .json files contains the data is represented below.
 
 
 
