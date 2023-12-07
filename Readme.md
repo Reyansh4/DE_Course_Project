@@ -19,6 +19,7 @@ video relationships, and MySQL for storing relational information, including cru
 # **WORKING**</br>
 ## **USAGE**
 The way to use the app is clearly described in the [Presentation](Presentation.pdf).</br>
+Instead watch the [tutorial](https://youtu.be/QAbIaa7mXuc) regarding the working of the app that i uploaded in youtube.
 
 ## **SETTING UP THE DB'S**
 * The SQL is setup by using the MySQL-connector-python and initially we create two tables named as STATS and ENGAGEMENT and query in the above tables. Thw stats part in the .json files is stored in the SQLDB.</br>
